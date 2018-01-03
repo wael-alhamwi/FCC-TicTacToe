@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <link href="https://fonts.googleapis.com/css?family=Cabin+Sketch" rel="stylesheet">
+
+<style>
+  body{
+    font-family: 'Cabin Sketch', cursive;
+    background-color: #9896A4;
+    /* #9896A4 */
+    background-image: url("http://www.viziowedding.com/pictures/rustic-wedding-invitation-background-PC03Htpu.jpg");
+    background-size: auto 125%;
+    color: white;
+  }
+  span{
+    font-family: 'Cabin Sketch', cursive;
+    color: white;
+  }
+  td {
+    height: 18vh;
+    width: 20vw;
+    text-align: center;
+    font-size: 10vh;
+    border-color: white;
+  }
+
+  td.upperRight {
+    border-top-style: none;
+    border-right-style: none;
+    border-left-style: groove;
+    border-bottom-style: groove;
+  }
+  td.upperLeft {
+    border-top-style: none;
+    border-right-style: groove;
+    border-left-style: none;
+    border-bottom-style: groove;
+  }
+  td.bottomRight {
+    border-top-style: groove;
+    border-right-style: none;
+    border-left-style: groove;
+    border-bottom-style: none;
+  }
+  td.bottomLeft {
+    border-top-style: groove;
+    border-right-style: groove;
+    border-left-style: none;
+    border-bottom-style: none;
+  }
+  td.middle {
+    border-style: groove;
+  }
+
+  /* Font colors: #92A8D1 and #F7CAC9 */
+  td:hover {
+    cursor: pointer;
+  }
+  .myTable{
+    border-color: white;
+    text-align: center;
+    margin: auto;
+  }
+  .modal-content{
+    color: black;
+  }
+</style>
+
+
+
+</head>
+<body>
+<div class="container text-center">
+ <h2>FCC Tic Tac Toe Challenge</h2>
+ <h4>
+  Scores<br>Player X: <span id="PlayerXscore"></span><br>Player O: <span id="PlayerOscore"></span><br>
+  Turn: <span id="turnId"></span><br>
+  Round: <span id="roundId"></span><br>
+ </h4>                                     
+  <table id="tableId" class="myTable">
+    <tbody>
+      <tr>
+        <td id="00" class="upperLeft" value=""></td>
+        <td id="01" value=""></td>
+        <td id="02" class="upperRight" value=""></td>
+      </tr>
+      <tr>
+        <td id="10" value=""></td>
+        <td id="11" class="middle" value=""></td>
+        <td id="12" value=""></td>
+      </tr>
+      <tr>
+        <td id="20" class="bottomLeft" value=""></td>
+        <td id="21" value=""></td>
+        <td id="22" class="bottomRight" value=""></td>
+      </tr>
+    </tbody>
+  </table>
+  <span id="winnerId"></span><br>
+  <button id="resetBtnId" class="btn btn-primary" value="Reload Page" onClick="document.location.reload(true)">Reset</button>  
+</div>
+
+<!-- Hidden trigger for the modal -->
+<input id="openModalBtn" type="hidden" data-toggle="modal" data-target="#myModal"></input>
+
+<!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-sm">
+    
+      <!-- Modal content-->
+      <div class="modal-content text-center">
+        <div class="modal-header">
+          <h4 class="modal-title text-center">WELCOME TO MY<br>FCC TIC TAC TOE CHALLENGE</h4>
+        </div>
+        <div class="modal-body">
+          <p>Choose player</p>
+          <div id="choosePlayerId" class="btn-group btn-toggle"> 
+            <button class="btn btn-default">O</button>
+            <button class="btn btn-primary active">X</button>
+          </div>
+          <br>
+          <p>Play against</p>
+          <div id="playAgainstId" class="btn-group btn-toggle"> 
+            <button class="btn btn-default">Computer</button>
+            <button class="btn btn-primary active">Human</button>
+          </div>
+          <br>
+          <br>
+          <button id="startId" class="btn btn-danger" data-dismiss="modal">Start</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+ <!-- Logic code -->
+<script type="text/javascript">
+/*
+  // TODO: Get all table cells    // Done
+  // TODO: Restart button         // Done
+  // TODO: On click place X or O (If cell has a value don't insert anything)  // Done
+  // TODO: Switch between X or O for placement  // Done
+  // TODO: Select player's X or O  // Done
+  // TODO: Score board showing ( Each player details name, score, Total rounds, turn)   // Done
+  // TODO: Implement logic against AI // STUPID RANDOM PLACEMENT
+  // TODO: Implement against Human  // Done
+  // TODO: Login page (Choose player, Choose if Against Computer or Human)   // Need to be finished
+  // TODO: Check if player has two wins -> Announce winning player and reset game   // Done
+  // TODO: Check for draw condition   // Done
+         - Don't increase round
+           - Clear table and associated variables
+           - Show draw message
+*/
+
+
+  var table = $("#tableId")[0];  // Board global variable
+  var PlayerX = true;     // Flag for choosing between players
+  var scoreOfX = 0;       // To keep score of player X
+  var scoreOfO = 0;       // To keep score of player O
+  var moveNum = 0;        // To keep track of turns number
+  var roundNum = 1;       // Simply round number
+  var gameModeAI = false; // Game mode flag AI or Human
+  var playerTurn = true;  // Determine player or Computer turn
+
+
+  function generateRandomNumber() {
+  return Math.floor(Math.random() * 3);
+}
+
+  function AI(){  // AI LOGIC
+    // Generate random row and column values
+    // Check if the generated random numbers doesn't equal to
+    // Check if cell has value an existing value 
+    // => If Yes generate different random
+    // => If No play(generatedRow, generatedColumn)
+    var tempRow = generateRandomNumber();
+    var tempCol = generateRandomNumber();
+
+    var cell = table.rows[tempRow].cells[tempCol];
+    if($(cell).val()){
+      AI();   // Call function again
+    }else{
+      play(tempRow,tempCol);
+    }
+  }
+
+  function myDelayFunction() {
+    setTimeout( function(){  // Clear board content
+    for (var i = 0; i < table.rows.length; i++) {
+      for (var j = 0; j < table.rows[0].cells.length; j++) {
+        var cell = table.rows[i].cells[j];
+        $(cell).val(""); // 
+        $(cell).removeProp('color');
+        $(cell).text("");
+      }
+    }
+    $("#winnerId").text("");
+  }, 2000);
+}
+
+  function play(row,column){
+    var cell = table.rows[row].cells[column];
+    var str = String($(cell).val());
+    
+    if(str){
+      //console.log("No action needed: "+ str);
+    }else{
+      if(playerTurn){
+        playerTurn = false;
+      }else{
+        playerTurn = true;
+      }
+      moveNum += 1;   // Start logic after 5 turns
+      if(PlayerX){
+        $(cell).text("X");
+        $(cell).val(1); // Assign 1 to X for later logic use  92A8D1
+        $(cell).css('color', '#92A8D1');
+       
+        if(checkWinner(table,PlayerX,row,column) && moveNum >= 5){ // Check for winner here
+          //console.log("Player X Wins");
+          scoreOfX++;
+          $("#PlayerXscore").text(scoreOfX);
+          moveNum = 0;
+          roundNum++;
+          //alert("Player X Win");
+          $("#roundId").text(roundNum);
+          $("#winnerId").text("Player X Win!");
+          myDelayFunction();
+          //clearTableContent(table);   // Clear board content
+          if(scoreOfX == 2){
+            $("#winnerId").text("Player X Win!");
+            myDelayedReset();
+          }
+
+        }else{
+          if(moveNum == 9){
+            $("#winnerId").text("Draw!");
+            myDelayFunction();   // Clear board content
+          }
+          PlayerX = false;
+          $("#turnId").text("Player O");
+        }
+      }else{
+        $(cell).text("O");
+        $(cell).val(0); // Assign 0 to O for later logic use
+        $(cell).css('color', '#F7CAC9');
+        
+        if(checkWinner(table,PlayerX,row,column) && moveNum >= 5){// Check for winner here
+          //console.log("Player O Wins");
+          scoreOfO++;
+          $("#PlayerOscore").text(scoreOfO);
+          moveNum = 0;
+          roundNum++;
+          //alert("Player O Win");
+          $("#winnerId").text("Player O Win!");
+          $("#roundId").text(roundNum);
+          myDelayFunction();
+          //clearTableContent(table);   // Clear board content
+          if(scoreOfO == 2){
+            $("#winnerId").text("Player O Win!");
+            myDelayedReset();
+          }
+        }else{
+          if(moveNum == 9){
+            $("#winnerId").text("Draw!");
+            myDelayFunction();   // Clear board content
+          }
+          PlayerX = true;
+          $("#turnId").text("Player X");
+        }
+      }
+    }
+    
+  }
+
+  function compareCells(searchVal,table,cell1Row,cell1Col,cell2Row,cell2Col){  // Need to finish this
+
+    var weight = 0; // If weight is 2 then we have a winner
+    var neighbourCell1 = table.rows[cell1Row].cells[cell1Col];
+    var neighbourCell1Val = String($(neighbourCell1).val());
+    if (searchVal == neighbourCell1Val) {
+      weight++;
+    }
+    var neighbourCell2 = table.rows[cell2Row].cells[cell2Col];
+    var neighbourCell2Val = String($(neighbourCell2).val());
+    if (searchVal == neighbourCell2Val) {
+      weight++;
+    }
+    console.log("Weight "+weight);
+    return weight;
+  }
+
+  function checkWinner(table,player,currentRow,currentCol){   //Implement this shit
+    // Table is the dataset
+    // player is to determine X or O
+    var currentCell = table.rows[currentRow].cells[currentCol];
+    var searchVal = String($(currentCell).val()); // Value of current cell (1 or 0)
+    // currentRow, currentCol to check from that exact position
+    // Check if index is in board
+    // TODO: Every cell should check for all posibilities
+    if(currentRow >= 0 && currentCol >= 0 && currentRow <= 2 && currentCol <= 2){
+      if(currentRow == 0){
+        if(currentCol == 0){ // Current cell(0,0)
+          
+          var weight = 0; // If weight is 2 then we have a winner
+
+          // CHECK (0,1),(0,2) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow,currentCol+1,currentRow,currentCol+2);
+
+          if (weight == 2) {return true;}  // Final result
+
+          // CHECK (1,0),(2,0) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow+1,currentCol,currentRow+2,currentCol);
+
+          if (weight == 2) {return true;}  // Final result
+
+          // CHECK (1,1),(2,2) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow+1,currentCol+1,currentRow+2,currentCol+2);
+
+          if (weight == 2) {return true;}  // Final result
+        }
+        if(currentCol == 1){ // Current cell(0,1)
+          
+          var weight = 0; // If weight is 2 then we have a winner
+
+          // CHECK (0,0),(0,2) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow,currentCol-1,currentRow,currentCol+1);
+
+          if (weight == 2) {return true;}  // Final result
+          
+          // CHECK (1,1),(2,1) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow+1,currentCol,currentRow+2,currentCol);
+
+          if (weight == 2) {return true;}  // Final result
+        }
+        if(currentCol == 2){ // Current cell(0,2)
+          
+          var weight = 0; // If weight is 2 then we have a winner
+
+          // CHECK (0,0),(0,1) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow,currentCol-2,currentRow,currentCol-1);
+
+          if (weight == 2) {return true;}  // Final result
+
+          // CHECK (1,1),(2,0) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow+1,currentCol-1,currentRow+2,currentCol-2);
+
+          if (weight == 2) {return true;}  // Final result
+
+          // CHECK (1,2),(2,2) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow+1,currentCol,currentRow+2,currentCol);
+
+          if (weight == 2) {return true;}  // Final result
+        }
+      }
+      if(currentRow == 1){
+        if(currentCol == 0){ // Current cell(1,0)
+          
+          var weight = 0; // If weight is 2 then we have a winner
+
+          // CHECK (0,0),(2,0) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow-1,currentCol,currentRow+1,currentCol+2);
+
+          if (weight == 2) {return true;}  // Final result
+
+          // CHECK (1,1),(1,2) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow,currentCol+1,currentRow,currentCol+2);
+
+          if (weight == 2) {return true;}  // Final result
+
+        }
+        if(currentCol == 1){   // Current cell(1,1)
+
+           var weight = 0; // If weight is 2 then we have a winner
+
+          // CHECK (1,0),(1,2) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow,currentCol-1,currentRow,currentCol+1);
+
+          if (weight == 2) {return true;}  // Final result
+
+          // CHECK (0,1),(2,1) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow-1,currentCol,currentRow+1,currentCol);
+
+          if (weight == 2) {return true;}  // Final result
+
+          // CHECK (0,0),(2,2) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow-1,currentCol-1,currentRow+1,currentCol+1);
+
+          if (weight == 2) {return true;}  // Final result
+
+          // CHECK (2,0),(0,2) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow+1,currentCol-1,currentRow-1,currentCol+1);
+
+          if (weight == 2) {return true;}  // Final result
+
+        }
+        if(currentCol == 2){// Current cell(1,2)
+
+           var weight = 0; // If weight is 2 then we have a winner
+
+          // CHECK (0,2),(2,2) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow-1,currentCol,currentRow+1,currentCol);
+
+          if (weight == 2) {return true;}  // Final result
+
+          // CHECK (1,0),(1,1) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow,currentCol-2,currentRow,currentCol-1);
+
+          if (weight == 2) {return true;}  // Final result
+
+        }        
+      }
+      if(currentRow == 2){
+        if(currentCol == 0){ // Current cell(2,0)
+          
+          var weight = 0; // If weight is 2 then we have a winner
+
+          // CHECK (1,0),(0,0) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow-1,currentCol,currentRow-2,currentCol);
+
+          if (weight == 2) {return true;}  // Final result
+
+          // CHECK (2,2),(2,1) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow,currentCol+1,currentRow,currentCol+2);
+
+          if (weight == 2) {return true;}  // Final result
+
+          // CHECK (1,1),(0,2) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow-1,currentCol+1,currentRow-2,currentCol+2);
+
+          if (weight == 2) {return true;}  // Final result
+        }
+        if(currentCol == 1){ // Current cell(2,1)
+          
+          var weight = 0; // If weight is 2 then we have a winner
+
+          // CHECK (2,0),(2,2) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow,currentCol-1,currentRow,currentCol+1);
+
+          if (weight == 2) {return true;}  // Final result
+
+          // CHECK (1,1),(0,1) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow-1,currentCol,currentRow-2,currentCol);
+
+          if (weight == 2) {return true;}  // Final result
+
+        }
+        if(currentCol == 2){ // Current cell(2,0)
+          
+          var weight = 0; // If weight is 2 then we have a winner
+
+          // CHECK (0,2),(1,2) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow-2,currentCol,currentRow-1,currentCol);
+
+          if (weight == 2) {return true;}  // Final result
+
+          // CHECK (2,0),(2,1) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow,currentCol-1,currentRow,currentCol-2);
+
+          if (weight == 2) {return true;}  // Final result
+
+          // CHECK (1,1),(0,0) if match current cell -> win
+          weight = compareCells(searchVal,table,currentRow-1,currentCol-1,currentRow-2,currentCol-2);
+
+          if (weight == 2) {return true;}  // Final result
+        }        
+      }
+    }
+  }
+
+   function reset(){
+    $("#resetBtnId").click();
+  }
+
+  function myDelayedReset() {
+      setTimeout(reset(), 2000);
+  }
+ 
+    // Get the modal
+  var modal = document.getElementById('myModal');
+
+  // When the user clicks the button, open the modal 
+  function openModal(){
+      modal.style.display = "block";
+  }
+
+  // When the user clicks on <span> (x), close the modal
+  function closeModal(){
+      modal.style.display = "none";
+      $("#PlayerOscore").text(scoreOfO);
+      $("#PlayerXscore").text(scoreOfX);
+      $("#roundId").text(roundNum);
+      $("#turnId").text(PlayerX ? "Player X":"Player O");
+  }
+
+    // Toggle button Choose player
+  $('#choosePlayerId').click(function() {
+    
+    $(this).find('.btn').toggleClass('active');
+    if (PlayerX) {
+      PlayerX = false;
+    }else {
+      PlayerX = true;
+    }
+    
+    if ($(this).find('.btn-primary').length>0) {
+      $(this).find('.btn').toggleClass('btn-primary');
+    }
+    console.log("PLAYER X "+PlayerX);
+
+    $(this).find('.btn').toggleClass('btn-default');
+       
+    });
+
+    // Toggle button Choose game type
+  $('#playAgainstId').click(function() {
+    
+    $(this).find('.btn').toggleClass('active');
+    if (gameModeAI) {
+      gameModeAI = false;
+    }else {
+      gameModeAI = true;
+    }
+    
+    if ($(this).find('.btn-primary').length>0) {
+      $(this).find('.btn').toggleClass('btn-primary');
+    }
+    console.log("GMODE "+gameModeAI);
+
+    $(this).find('.btn').toggleClass('btn-default');
+       
+    });
+
+  $(document).ready(function() {
+    
+    // Start screen
+    $("#openModalBtn").click(); 
+
+    // ROW 1
+    $("#00").click(function(){  // COL 1
+      if(gameModeAI){
+        play(0,0);
+        if(!playerTurn){
+          AI();
+        }
+      }else{
+          play(0,0);
+      }
+    });  
+    $("#01").click(function(){  // COL 2
+      if(gameModeAI){
+         play(0,1);
+        if(!playerTurn){
+          AI();
+        }
+      }else{
+          play(0,1);
+      }
+    });  
+    $("#02").click(function(){  // COL 3
+      if(gameModeAI){
+         play(0,2);
+        if(!playerTurn){
+          AI();
+        }
+      }else{
+          play(0,2);
+      }
+    });  
+    // ROW 2
+    $("#10").click(function(){  // COL 1
+      if(gameModeAI){
+         play(1,0);
+        if(!playerTurn){
+          AI();
+        }
+      }else{
+          play(1,0);
+      }
+    });  
+    $("#11").click(function(){  // COL 2
+      if(gameModeAI){
+         play(1,1);
+        if(!playerTurn){
+          AI();
+        }
+      }else{
+          play(1,1);
+      }
+    });  
+    $("#12").click(function(){  // COL 3
+      if(gameModeAI){
+         play(1,2);
+        if(!playerTurn){
+          AI();
+        }
+      }else{
+          play(1,2);
+      }
+    });  
+    // ROW 3
+    $("#20").click(function(){  // COL 1
+      if(gameModeAI){
+         play(2,0);
+        if(!playerTurn){
+          AI();
+        }
+      }else{
+          play(2,0);
+      }
+    });  
+    $("#21").click(function(){  // COL 2
+
+      if(gameModeAI){
+         play(2,1);
+        if(!playerTurn){
+          AI();
+        }
+      }else{
+          play(2,1);
+      }
+
+    });  
+    $("#22").click(function(){ // COL 3
+
+       if(gameModeAI){
+          play(2,2);
+        if(!playerTurn){
+          AI();
+        }
+      }else{
+          play(2,2);
+      }
+    }); 
+
+    $("#startId").click(function(){closeModal()}); 
+  });
+
+</script>
+</body>
+</html>
